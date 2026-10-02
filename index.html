@@ -498,16 +498,12 @@ lyr.addEventListener('click', e => { const p = e.target.closest('p[data-k]'); if
 /* ============ UI ============ */
 const setTheme = t => { document.body.dataset.theme = t; store.set('gm_theme', t); $$('.themes button').forEach(b => b.classList.toggle('on', b.dataset.t === t)); };
 setTheme(store.get('gm_theme', 'purple'));
-$$('.themes button').forEach(b => b.onclick = () => setTheme(b.dataset.t));
-
-function go(v) {
-  $$('.nav').forEach(n => n.classList.toggle('on', n.dataset.v === v));
+$$('.themes button').forEach(b => b.onclick = () => setTheme(b.dataset.t));  function go(v) {   $$
+('.nav').forEach(n => n.classList.toggle('on', n.dataset.v === v));
   ['search', 'library', 'history'].forEach(x => $('#v-' + x).classList.toggle('hide', x !== v));
   if (v === 'library') renderLibrary();
   if (v === 'history') show(hist, $('#v-history'), { title: 'Last session', empty: 'Songs you play will show up here.' });
-  if (v === 'search' && !$('#q').value.trim()) showHome();
-}
-$$('.nav').forEach(n => n.onclick = () => go(n.dataset.v));
+  if (v === 'search' && !$('#q').value.trim()) showHome(); } $$('.nav').forEach(n => n.onclick = () => go(n.dataset.v));
 
 const row = (t, i) => t.type === 'album'
   ? `<div class="row" data-i="${i}"><img src="${esc(t.thumb)}" alt="" loading="lazy"><div class="meta"><b>${esc(t.title)}</b><span>${esc(t.artist)} · Album</span></div><span></span><button data-a="open" title="Open album">›</button><span></span></div>`
@@ -580,8 +576,10 @@ async function search() {
   catch (e) { if (my === reqId) host.innerHTML = `<p class="msg">Couldn't search: ${esc(e.message)}</p>`; }
 }
 $('#q').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(search, 450); });
-$$('[data-src]').forEach(b => b.onclick = () => { S.src = b.dataset.src; $$('[data-src]').forEach(x => x.classList.toggle('on', x === b)); search(); });
-$$('[data-flt]').forEach(b => b.onclick = () => { S.flt = b.dataset.flt; $$('[data-flt]').forEach(x => x.classList.toggle('on', x === b)); search(); });
+$$('[data-src]').forEach(b => b.onclick = () => { S.src = b.dataset.src; $$
+('[data-src]').forEach(x => x.classList.toggle('on', x === b)); search(); });
+$$('[data-flt]').forEach(b => b.onclick = () => { S.flt = b.dataset.flt; $$
+('[data-flt]').forEach(x => x.classList.toggle('on', x === b)); search(); });
 
 /* ============ HOME DASHBOARD ============ */
 const SHELVES = [
@@ -614,9 +612,7 @@ function showHome() {
   }
   fillQuick();
 }
-$('#home').addEventListener('click', e => {
-  const chip = e.target.closest('[data-tr]');
-  if (chip) { $$('#home .chip').forEach(c => c.classList.toggle('on', c === chip)); return loadTrend(chip.dataset.tr); }
+$('#home').addEventListener('click', e => {   const chip = e.target.closest('[data-tr]');   if (chip) { $$('#home .chip').forEach(c => c.classList.toggle('on', c === chip)); return loadTrend(chip.dataset.tr); }
   const c = e.target.closest('.card'); if (!c) return;
   const list = S.shelves[c.dataset.sh], t = list?.[+c.dataset.k]; if (!t) return;
   if (t.type === 'album') return openAlbum(t);
