@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -242,6 +242,7 @@ const decode = s => { const t = document.createElement('textarea'); t.innerHTML 
 const cleanTitle = s => decode(s).replace(/\s*[\(\[](official|lyrics?|audio|video|music video|hd|4k|visuali[sz]er)[^\)\]]*[\)\]]/gi, '').trim();
 const cleanArtist = s => decode(s).replace(/ - Topic$/, '').replace(/VEVO$/i, '').trim();
 const isoSec = iso => { const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(iso || ''); return m ? (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0) : 0; };
+const tfetch = (u, ms = 7000) => Promise.race([fetch(String(u)), new Promise((_, rej) => setTimeout(() => rej(Error('timeout')), ms))]);
 const cache = new Map();
 const cached = async (k, fn) => { if (cache.has(k)) return cache.get(k); const v = await fn(); cache.set(k, v); return v; };
 
@@ -249,7 +250,7 @@ const cached = async (k, fn) => { if (cache.has(k)) return cache.get(k); const v
 const ytApi = async (ep, p) => {
   const u = new URL('https://www.googleapis.com/youtube/v3/' + ep);
   for (const [k, v] of Object.entries({ ...p, key: CONFIG.YOUTUBE_API_KEY })) u.searchParams.set(k, v);
-  const r = await fetch(u), j = await r.json();
+  const r = await fetch(u.toString()), j = await r.json();
   if (!r.ok) throw Error(j.error?.message || 'YouTube API error');
   return j;
 };
@@ -263,7 +264,7 @@ async function hydrate(items, getId) {
 // Piped (no key)
 async function piped(path) {
   for (const b of CONFIG.PIPED) {
-    try { const r = await fetch(b + path, { signal: AbortSignal.timeout(7000) }); if (r.ok) return await r.json(); } catch {}
+    try { const r = await tfetch(b + path); if (r.ok) return await r.json(); } catch {}
   }
   throw Error('Search servers are unreachable right now. Try again, or set YOUTUBE_API_KEY in CONFIG.');
 }
@@ -304,7 +305,7 @@ async function getStream(id) { // direct audio URL via Piped (cached 30 min); nu
   const c = streamCache.get(id); if (c && Date.now() - c.t < 30 * 60e3) return c.v;
   for (const b of CONFIG.PIPED) {
     try {
-      const r = await fetch(`${b}/streams/${id}`, { signal: AbortSignal.timeout(7000) }); if (!r.ok) continue;
+      const r = await tfetch(`${b}/streams/${id}`); if (!r.ok) continue;
       const j = await r.json();
       relCache.set(id, (j.relatedStreams || []).map(fromPiped).filter(x => x.type === 'song' && x.id));
       const a = (j.audioStreams || []).filter(x => x.url && /audio\/(mp4|webm)/.test(x.mimeType || '')).sort((x, y) => (y.bitrate || 0) - (x.bitrate || 0));
