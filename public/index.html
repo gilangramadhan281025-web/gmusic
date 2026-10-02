@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GMUSIC</title>
+<style>
+:root{--g1:#8b5cf6;--g2:#f0abfc;--glass:rgba(255,255,255,.06);--line:rgba(255,255,255,.1);--mut:#9ca3af}
+[data-theme=cyan]{--g1:#22d3ee;--g2:#34d399}
+[data-theme=sunset]{--g1:#fb923c;--g2:#f43f5e}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:#000;color:#f5f5f7;font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:grid;grid-template-columns:220px 1fr;grid-template-rows:1fr auto;overflow:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(60% 50% at 15% 0%,color-mix(in srgb,var(--g1) 35%,transparent),transparent),radial-gradient(50% 40% at 100% 100%,color-mix(in srgb,var(--g2) 22%,transparent),transparent)}
+button,input,select{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--g2);outline-offset:2px}
+.glass{background:var(--glass);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--line)}
+aside{grid-row:1;margin:12px 0 0 12px;border-radius:20px;padding:20px 14px;display:flex;flex-direction:column;gap:6px}
+.brand{font-weight:800;font-size:22px;letter-spacing:.04em;padding:0 10px 16px;background:linear-gradient(90deg,var(--g1),var(--g2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.nav{text-align:left;padding:10px 12px;border-radius:12px;color:var(--mut);white-space:nowrap}
+.nav.on,.nav:hover{background:var(--glass);color:#fff}
+.themes{margin-top:auto;display:flex;gap:8px;padding:0 10px}
+.themes button{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);flex:none}
+.themes button.on{border-color:#fff}
+main{grid-row:1;overflow-y:auto;padding:24px 28px 40px;min-width:0}
+.hide{display:none!important}
+h2{font-size:18px;margin:22px 0 10px}
+.search input{width:100%;padding:14px 18px;border-radius:999px;background:var(--glass);border:1px solid var(--line);outline:0}
+.search input:focus{border-color:var(--g2)}
+.tabs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.tab{padding:6px 14px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
+.tab.on{background:linear-gradient(90deg,var(--g1),var(--g2));color:#000;border-color:transparent;font-weight:600}
+.sep{width:1px;background:var(--line);margin:0 4px}
+.top{display:flex;gap:16px;align-items:center;padding:16px;border-radius:20px;max-width:520px;cursor:pointer}
+.top img{width:96px;height:96px;border-radius:14px;object-fit:cover}
+.top b{font-size:18px;display:block}
+.row{display:grid;grid-template-columns:48px 1fr auto auto auto;gap:12px;align-items:center;padding:8px;border-radius:12px;cursor:pointer}
+.row:hover,.row.cur{background:var(--glass)}
+.row.cur b{color:var(--g2)}
+.row img{width:48px;height:48px;border-radius:8px;object-fit:cover;background:#111}
+.meta{min-width:0}.meta b,.meta span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta span,.dur{color:var(--mut);font-size:12px}
+.row button{width:32px;height:32px;border-radius:50%}
+.row button:hover{background:var(--line)}
+.msg{color:var(--mut);padding:24px 0}
+.pl{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-radius:14px;margin-bottom:8px;cursor:pointer}
+.head{display:flex;gap:10px;align-items:center;margin:8px 0}
+.pill{padding:6px 14px;border-radius:999px;background:var(--glass);border:1px solid var(--line)}
+#player{grid-column:1/-1;margin:12px;border-radius:20px;padding:10px 18px calc(10px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:16px;align-items:center;z-index:5}
+.np{display:flex;gap:12px;align-items:center;min-width:0}
+.np img{width:52px;height:52px;border-radius:10px;object-fit:cover;background:#111;flex:none}
+.ctl{display:flex;flex-direction:column;gap:4px;align-items:center}
+.btns{display:flex;gap:6px;align-items:center}
+.btns button{width:36px;height:36px;border-radius:50%;font-size:16px}
+.btns button.on{color:var(--g2)}
+.btns .pp{width:46px;height:46px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#000;font-size:18px}
+.seek{display:flex;gap:8px;align-items:center;width:100%;font-size:11px;color:var(--mut)}
+input[type=range]{accent-color:var(--g2);flex:1;min-width:0}
+.right{display:flex;gap:8px;align-items:center;justify-content:flex-end}
+.right select{background:#111;border:1px solid var(--line);border-radius:8px;padding:4px}
+.hq{font-size:10px;border:1px solid var(--g2);color:var(--g2);border-radius:6px;padding:2px 6px;white-space:nowrap}
+#vol{max-width:90px}
+#lyr{position:fixed;inset:12px 12px 110px 12px;border-radius:24px;z-index:4;background:rgba(0,0,0,.85);overflow-y:auto;padding:40vh 24px;text-align:center;scroll-behavior:smooth}
+#lyr p{font-size:clamp(20px,3vw,32px);font-weight:600;color:#555;padding:8px 0;transition:.25s;cursor:pointer}
+#lyr p.on{color:#fff;transform:scale(1.04);text-shadow:0 0 24px var(--g1)}
+#lyr .none{font-size:16px;color:var(--mut)}
+#yt{position:fixed;width:1px;height:1px;bottom:0;right:0;opacity:0;pointer-events:none}
+dialog{margin:auto;background:#0b0b0f;color:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;width:min(340px,90vw)}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog button.opt{display:block;width:100%;text-align:left;padding:10px;border-radius:10px}
+dialog button.opt:hover{background:var(--glass)}
+dialog input{width:100%;padding:10px;border-radius:10px;background:var(--glass);border:1px solid var(--line);margin:8px 0}
+@media(max-width:820px){
+ body{grid-template-columns:1fr}
+ aside{flex-direction:row;margin:8px 8px 0;padding:8px;overflow-x:auto;align-items:center}
+ .brand{padding:0 8px}.themes{margin:0 0 0 auto}
+ main{padding:16px}
+ #player{grid-template-columns:1fr;gap:8px;margin:8px}
+ .right{justify-content:space-between}
+ .row{grid-template-columns:44px 1fr auto auto}.row .dur{display:none}
+ #lyr{inset:8px 8px 230px 8px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body data-theme="purple">
+<aside class="glass">
+  <div class="brand">GMUSIC</div>
+  <button class="nav on" data-v="search">Search</button>
+  <button class="nav" data-v="library">Library</button>
+  <button class="nav" data-v="history">Last session</button>
+  <div class="themes" role="group" aria-label="Theme">
+    <button data-t="purple" title="Cyberpunk Purple" style="background:linear-gradient(135deg,#8b5cf6,#f0abfc)"></button>
+    <button data-t="cyan" title="Neon Cyan" style="background:linear-gradient(135deg,#22d3ee,#34d399)"></button>
+    <button data-t="sunset" title="Sunset Orange" style="background:linear-gradient(135deg,#fb923c,#f43f5e)"></button>
+  </div>
+</aside>
+
+<main>
+  <section id="v-search">
+    <div class="search"><input id="q" type="search" placeholder="Search songs, artists or albums" autocomplete="off"></div>
+    <div class="tabs">
+      <button class="tab on" data-src="ytmusic">YTMusic</button><button class="tab" data-src="youtube">YouTube</button>
+      <span class="sep"></span>
+      <button class="tab on" data-flt="songs">Songs</button><button class="tab" data-flt="videos">Videos</button><button class="tab" data-flt="albums">Albums</button>
+    </div>
+    <div id="res"></div>
+  </section>
+  <section id="v-library" class="hide"></section>
+  <section id="v-history" class="hide"></section>
+</main>
+
+<div id="lyr" class="hide"></div>
+<div id="yt"></div>
+
+<footer id="player" class="glass">
+  <div class="np"><img id="art" alt=""><div class="meta"><b id="ttl">Nothing playing</b><span id="art-n">Search for a song to start</span></div></div>
+  <div class="ctl">
+    <div class="btns">
+      <button id="shuf" title="Shuffle">⇄</button><button id="prev" title="Previous">⏮</button>
+      <button id="pp" class="pp" title="Play/Pause">▶</button>
+      <button id="next" title="Next">⏭</button><button id="rep" title="Repeat: off">↻</button>
+    </div>
+    <div class="seek"><span id="cur">0:00</span><input id="seek" type="range" min="0" max="100" step="0.1" value="0" aria-label="Seek"><span id="tot">0:00</span></div>
+  </div>
+  <div class="right">
+    <span class="hq" id="hq">High quality</span>
+    <select id="spd" title="Playback speed"><option>0.5</option><option>0.75</option><option selected>1</option><option>1.25</option><option>1.5</option><option>1.75</option><option>2</option></select>
+    <button id="mute" title="Mute">🔊</button><input id="vol" type="range" min="0" max="100" value="80" aria-label="Volume">
+    <button id="lyrBtn" class="pill">Lyrics</button>
+  </div>
+</footer>
+
+<dialog id="dlg"></dialog>
+
+<script>
+/* ============ CONFIG (edit here) ============
+   YOUTUBE_API_KEY: optional. If set, search uses the YouTube Data API (most reliable).
+   If empty, search and audio use the public Piped servers below (no key needed, but
+   public servers can be slow or offline). Anyone who opens this file can read the key,
+   so restrict it to YouTube Data API v3 in Google Cloud Console. */
+const CONFIG = {
+  YOUTUBE_API_KEY: 'AIzaSyCi08Lr5kNs5u5b6ZEUiQ_1ahEXIs2y_AI',
+  PIPED: ['https://pipedapi.kavin.rocks', 'https://api.piped.private.coffee', 'https://pipedapi.adminforge.de']
+};
+
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const store = {
+  get: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+  set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+let pls = store.get('gm_playlists', {}), hist = store.get('gm_history', []);
+const S = { queue: [], i: -1, view: [], shuffle: false, repeat: 0, src: 'ytmusic', flt: 'songs', lines: [], active: -1, seeking: false, openPl: null };
+
+/* ============ DATA LAYER (replaces the old server) ============ */
+const decode = s => { const t = document.createElement('textarea'); t.innerHTML = s || ''; return t.value; };
+const cleanTitle = s => decode(s).replace(/\s*[\(\[](official|lyrics?|audio|video|music video|hd|4k|visuali[sz]er)[^\)\]]*[\)\]]/gi, '').trim();
+const cleanArtist = s => decode(s).replace(/ - Topic$/, '').replace(/VEVO$/i, '').trim();
+const isoSec = iso => { const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(iso || ''); return m ? (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0) : 0; };
+const cache = new Map();
+const cached = async (k, fn) => { if (cache.has(k)) return cache.get(k); const v = await fn(); cache.set(k, v); return v; };
+
+// YouTube Data API (used when a key is set)
+const ytApi = async (ep, p) => {
+  const u = new URL('https://www.googleapis.com/youtube/v3/' + ep);
+  for (const [k, v] of Object.entries({ ...p, key: CONFIG.YOUTUBE_API_KEY })) u.searchParams.set(k, v);
+  const r = await fetch(u), j = await r.json();
+  if (!r.ok) throw Error(j.error?.message || 'YouTube API error');
+  return j;
+};
+async function hydrate(items, getId) {
+  const ids = items.map(getId).filter(Boolean); if (!ids.length) return [];
+  const d = await ytApi('videos', { part: 'contentDetails,snippet', id: ids.join(',') });
+  return d.items.map(v => ({ id: v.id, type: 'song', title: cleanTitle(v.snippet.title), artist: cleanArtist(v.snippet.channelTitle), thumb: v.snippet.thumbnails?.medium?.url || '', duration: isoSec(v.contentDetails.duration) }));
+}
+
+// Piped (no key)
+async function piped(path) {
+  for (const b of CONFIG.PIPED) {
+    try { const r = await fetch(b + path, { signal: AbortSignal.timeout(7000) }); if (r.ok) return await r.json(); } catch {}
+  }
+  throw Error('Search servers are unreachable right now. Try again, or set YOUTUBE_API_KEY in CONFIG.');
+}
+const qp = (u, k) => { try { return new URL(u, 'https://x').searchParams.get(k); } catch { return null; } };
+const fromPiped = i => i.type === 'playlist' || /playlist/.test(i.url || '')
+  ? { id: qp(i.url, 'list'), type: 'album', title: decode(i.name || i.title), artist: cleanArtist(i.uploaderName), thumb: i.thumbnail, duration: 0 }
+  : { id: qp(i.url, 'v'), type: 'song', title: cleanTitle(i.title), artist: cleanArtist(i.uploaderName), thumb: i.thumbnail, duration: i.duration > 0 ? i.duration : 0 };
+
+async function doSearch(q, src, flt) {
+  return cached(`s|${src}|${flt}|${q}`, async () => {
+    if (CONFIG.YOUTUBE_API_KEY) {
+      const p = { part: 'snippet', maxResults: 20, safeSearch: 'moderate' };
+      if (flt === 'albums') {
+        const d = await ytApi('search', { ...p, q: q + ' album', type: 'playlist' });
+        return d.items.map(i => ({ id: i.id.playlistId, type: 'album', title: decode(i.snippet.title), artist: cleanArtist(i.snippet.channelTitle), thumb: i.snippet.thumbnails?.medium?.url || '', duration: 0 }));
+      }
+      const params = { ...p, type: 'video', q: flt === 'videos' ? q + ' music video' : q };
+      if (src === 'ytmusic' && flt === 'songs') params.videoCategoryId = 10;
+      return hydrate((await ytApi('search', params)).items, i => i.id.videoId);
+    }
+    const f = src === 'ytmusic' ? { songs: 'music_songs', videos: 'music_videos', albums: 'music_albums' }[flt] : (flt === 'albums' ? 'playlists' : 'videos');
+    const d = await piped(`/search?q=${encodeURIComponent(q)}&filter=${f}`);
+    return d.items.map(fromPiped).filter(t => t.id);
+  });
+}
+async function getAlbum(id) {
+  return cached('p|' + id, async () => {
+    if (CONFIG.YOUTUBE_API_KEY) {
+      const d = await ytApi('playlistItems', { part: 'snippet', maxResults: 50, playlistId: id });
+      return hydrate(d.items, i => i.snippet.resourceId?.videoId);
+    }
+    const d = await piped('/playlists/' + id);
+    return (d.relatedStreams || []).map(fromPiped).filter(t => t.id);
+  });
+}
+async function getStream(id) { // direct audio URL via Piped; fails over to the YouTube embed
+  for (const b of CONFIG.PIPED) {
+    try {
+      const r = await fetch(`${b}/streams/${id}`, { signal: AbortSignal.timeout(7000) }); if (!r.ok) continue;
+      const a = ((await r.json()).audioStreams || []).filter(s => s.url && /audio\/(mp4|webm)/.test(s.mimeType || ''));
+      a.sort((x, y) => (y.bitrate || 0) - (x.bitrate || 0));
+      if (a[0]) return { url: a[0].url, kbps: Math.round((a[0].bitrate || 0) / 1000), codec: /mp4/.test(a[0].mimeType) ? 'AAC' : 'Opus' };
+    } catch {}
+  }
+  return null;
+}
+async function getLyrics(t) {
+  return cached(`l|${t.artist}|${t.title}`, async () => {
+    try {
+      let r = await fetch('https://lrclib.net/api/get?' + new URLSearchParams({ track_name: t.title, artist_name: t.artist, duration: t.duration || '' }));
+      if (r.ok) return await r.json();
+      r = await fetch('https://lrclib.net/api/search?' + new URLSearchParams({ q: `${t.artist} ${t.title}` }));
+      const l = r.ok ? await r.json() : [];
+      return l.find(x => x.syncedLyrics) || l[0] || null;
+    } catch { return null; }
+  });
+}
+
+/* ============ PLAYBACK ENGINE (<audio> first, YouTube embed as fallback) ============ */
+const au = new Audio(); au.preload = 'auto';
+let eng = 'audio', yp = null, ypPromise = null, playId = 0, muted = false;
+const setPP = on => $('#pp').textContent = on ? '❚❚' : '▶';
+const ytInit = () => ypPromise || (ypPromise = new Promise(res => {
+  window.onYouTubeIframeAPIReady = () => { yp = new YT.Player('yt', { height: '1', width: '1', playerVars: { playsinline: 1, controls: 0 }, events: {
+    onReady: () => res(yp),
+    onStateChange: e => { if (eng !== 'yt') return; setPP(e.data === 1); if (e.data === 1) yp.setPlaybackRate(+$('#spd').value); if (e.data === 0) next(true); },
+    onError: e => { $('#art-n').textContent = `Playback blocked (${e.data}). Host this file on https, e.g. GitHub Pages.`; }
+  } }); };
+  const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(s);
+}));
+async function ytLoad(id) { await ytInit(); eng = 'yt'; yp.loadVideoById(id); yp.setVolume(+$('#vol').value); muted ? yp.mute() : yp.unMute(); $('#hq').textContent = 'YouTube player'; }
+const E = {
+  time: () => eng === 'audio' ? au.currentTime : (yp?.getCurrentTime?.() || 0),
+  dur: () => eng === 'audio' ? (au.duration || 0) : (yp?.getDuration?.() || 0),
+  playing: () => eng === 'audio' ? !au.paused : yp?.getPlayerState?.() === 1,
+  pause: () => eng === 'audio' ? au.pause() : yp?.pauseVideo(),
+  resume: () => eng === 'audio' ? au.play() : yp?.playVideo(),
+  seek: t => eng === 'audio' ? (au.currentTime = t) : yp?.seekTo(t, true)
+};
+au.onplay = () => eng === 'audio' && setPP(true);
+au.onpause = () => eng === 'audio' && setPP(false);
+au.onended = () => eng === 'audio' && next(true);
+au.onerror = () => { if (eng === 'audio' && au.src && S.queue[S.i]) { au.removeAttribute('src'); ytLoad(S.queue[S.i].id); } };
+
+function playList(list, i) { S.queue = list.filter(t => t.type !== 'album'); S.i = S.queue.findIndex(t => t.id === list[i].id); play(S.i); }
+async function play(i) {
+  const t = S.queue[i]; if (!t) return;
+  S.i = i; const my = ++playId;
+  au.pause(); yp?.stopVideo?.(); eng = 'audio';
+  $('#ttl').textContent = t.title; $('#art-n').textContent = t.artist; $('#art').src = t.thumb || '';
+  $('#seek').max = t.duration || 100; $('#tot').textContent = fmt(t.duration); $('#hq').textContent = 'Loading…';
+  hist = [t, ...hist.filter(x => x.id !== t.id)].slice(0, 50); store.set('gm_history', hist);
+  document.title = `${t.title} · GMUSIC`;
+  $$('.row').forEach(r => r.classList.toggle('cur', S.view[+r.dataset.i]?.id === t.id));
+  loadLyrics(t);
+  const s = await getStream(t.id); if (my !== playId) return;
+  if (s) {
+    au.src = s.url; au.playbackRate = +$('#spd').value; au.volume = +$('#vol').value / 100; au.muted = muted;
+    au.play().catch(() => {}); $('#hq').textContent = `${s.kbps} kbps ${s.codec}`;
+  } else ytLoad(t.id);
+}
+function next(auto) {
+  if (!S.queue.length) return;
+  if (auto && S.repeat === 1) return play(S.i);
+  if (S.shuffle && S.queue.length > 1) { let n; do n = Math.floor(Math.random() * S.queue.length); while (n === S.i); return play(n); }
+  if (S.i + 1 < S.queue.length) return play(S.i + 1);
+  if (S.repeat === 2 || !auto) return play(0);
+  E.pause();
+}
+const prev = () => { if (!S.queue.length) return; E.time() > 3 ? E.seek(0) : play(S.i > 0 ? S.i - 1 : S.queue.length - 1); };
+
+$('#pp').onclick = () => { if (S.i >= 0) E.playing() ? E.pause() : E.resume(); };
+$('#next').onclick = () => next(false); $('#prev').onclick = prev;
+$('#shuf').onclick = e => { S.shuffle = !S.shuffle; e.currentTarget.classList.toggle('on', S.shuffle); };
+$('#rep').onclick = e => { S.repeat = (S.repeat + 1) % 3; const b = e.currentTarget; b.classList.toggle('on', !!S.repeat); b.textContent = S.repeat === 1 ? '↻1' : '↻'; b.title = ['Repeat: off', 'Repeat: one', 'Repeat: all'][S.repeat]; };
+$('#spd').onchange = e => { au.playbackRate = +e.target.value; yp?.setPlaybackRate?.(+e.target.value); };
+const applyVol = () => { const v = +$('#vol').value; au.volume = v / 100; au.muted = muted; yp?.setVolume?.(v); muted ? yp?.mute?.() : yp?.unMute?.(); $('#mute').textContent = muted || !v ? '🔇' : '🔊'; };
+$('#vol').oninput = () => { muted = false; applyVol(); };
+$('#mute').onclick = () => { muted = !muted; applyVol(); };
+$('#seek').addEventListener('input', e => { S.seeking = true; $('#cur').textContent = fmt(e.target.value); });
+$('#seek').addEventListener('change', e => { E.seek(+e.target.value); S.seeking = false; });
+setInterval(() => {
+  if (S.i < 0) return;
+  const c = E.time(), d = E.dur();
+  if (d && Math.abs(+$('#seek').max - d) > 1) { $('#seek').max = d; $('#tot').textContent = fmt(d); }
+  if (!S.seeking) { $('#seek').value = c; $('#cur').textContent = fmt(c); }
+  syncLyrics(c);
+}, 250);
+
+/* ============ LYRICS ============ */
+const lyr = $('#lyr');
+$('#lyrBtn').onclick = () => lyr.classList.toggle('hide');
+const parseLrc = txt => (txt || '').split('\n').map(l => { const m = /^\[(\d+):(\d+(?:\.\d+)?)\](.*)/.exec(l); return m ? { t: +m[1] * 60 + +m[2], s: m[3].trim() } : null; }).filter(x => x && x.s);
+async function loadLyrics(t) {
+  S.lines = []; S.active = -1; lyr.innerHTML = '<p class="none">Finding lyrics…</p>';
+  const d = await getLyrics(t); if (S.queue[S.i]?.id !== t.id) return;
+  S.lines = parseLrc(d?.syncedLyrics);
+  if (S.lines.length) lyr.innerHTML = S.lines.map((l, k) => `<p data-k="${k}">${esc(l.s)}</p>`).join('');
+  else if (d?.plainLyrics) lyr.innerHTML = `<p class="none">Synced lyrics aren't available for this song.</p>` + d.plainLyrics.split('\n').map(l => `<p class="none" style="color:#aaa;font-size:18px">${esc(l)}</p>`).join('');
+  else lyr.innerHTML = '<p class="none">No lyrics found for this song.</p>';
+}
+function syncLyrics(c) {
+  if (!S.lines.length) return;
+  let k = -1; for (let j = 0; j < S.lines.length && S.lines[j].t <= c + 0.15; j++) k = j;
+  if (k === S.active) return; S.active = k;
+  lyr.querySelector('p.on')?.classList.remove('on');
+  const el = lyr.querySelector(`p[data-k="${k}"]`); if (!el) return;
+  el.classList.add('on');
+  if (!lyr.classList.contains('hide')) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+lyr.addEventListener('click', e => { const p = e.target.closest('p[data-k]'); if (p) E.seek(S.lines[+p.dataset.k].t); });
+
+/* ============ UI ============ */
+const setTheme = t => { document.body.dataset.theme = t; store.set('gm_theme', t); $$('.themes button').forEach(b => b.classList.toggle('on', b.dataset.t === t)); };
+setTheme(store.get('gm_theme', 'purple'));
+$$('.themes button').forEach(b => b.onclick = () => setTheme(b.dataset.t));
+
+function go(v) {
+  $$('.nav').forEach(n => n.classList.toggle('on', n.dataset.v === v));
+  ['search', 'library', 'history'].forEach(x => $('#v-' + x).classList.toggle('hide', x !== v));
+  if (v === 'library') renderLibrary();
+  if (v === 'history') show(hist, $('#v-history'), { title: 'Last session', empty: 'Songs you play will show up here.' });
+  if (v === 'search' && !$('#q').value.trim()) renderRecent();
+}
+$$('.nav').forEach(n => n.onclick = () => go(n.dataset.v));
+
+const row = (t, i) => t.type === 'album'
+  ? `<div class="row" data-i="${i}"><img src="${esc(t.thumb)}" alt="" loading="lazy"><div class="meta"><b>${esc(t.title)}</b><span>${esc(t.artist)} · Album</span></div><span></span><button data-a="open" title="Open album">›</button><span></span></div>`
+  : `<div class="row ${S.queue[S.i]?.id === t.id ? 'cur' : ''}" data-i="${i}"><img src="${esc(t.thumb)}" alt="" loading="lazy"><div class="meta"><b>${esc(t.title)}</b><span>${esc(t.artist)}</span></div><span class="dur">${fmt(t.duration)}</span><button data-a="play" title="Play">▶</button><button data-a="add" title="Add to playlist">＋</button></div>`;
+function show(list, host, o = {}) {
+  S.view = list;
+  const hasTop = o.top && list[0] && list[0].type !== 'album';
+  let h = hasTop ? `<h2>Top result</h2><div class="top glass" data-i="0" data-a="play"><img src="${esc(list[0].thumb)}" alt=""><div class="meta"><b>${esc(list[0].title)}</b><span>${esc(list[0].artist)} · ${fmt(list[0].duration)}</span></div></div><h2>Songs</h2>` : (o.title ? `<h2>${esc(o.title)}</h2>` : '');
+  h += list.map((t, k) => (hasTop && k === 0) ? '' : row(t, k)).join('');
+  host.innerHTML = list.length ? h : `<p class="msg">${esc(o.empty || 'Nothing here yet.')}</p>`;
+}
+const renderRecent = () => show(hist.slice(0, 10), $('#res'), { title: hist.length ? 'Pick up where you left off' : '', empty: 'Search for a song, artist or album to begin.' });
+
+function renderLibrary() {
+  const host = $('#v-library'), names = Object.keys(pls);
+  if (S.openPl && pls[S.openPl]) {
+    host.innerHTML = `<div class="head"><button class="pill" id="back">‹ Playlists</button><button class="pill" id="playAll">Play all</button></div><div id="plbox"></div>`;
+    show(pls[S.openPl], $('#plbox'), { title: S.openPl, empty: 'Add songs with the ＋ button.' });
+    $('#back').onclick = () => { S.openPl = null; renderLibrary(); };
+    $('#playAll').onclick = () => pls[S.openPl].length && playList(pls[S.openPl], 0);
+    return;
+  }
+  host.innerHTML = `<div class="head"><h2 style="margin:0">Playlists</h2><button class="pill" id="newPl">＋ New playlist</button></div>` +
+    (names.map(n => `<div class="pl glass" data-n="${esc(n)}"><span><b>${esc(n)}</b> <span class="dur">${pls[n].length} songs</span></span><button data-del="${esc(n)}" title="Delete playlist">✕</button></div>`).join('') || '<p class="msg">No playlists yet. Create one to save your favorites.</p>');
+  $('#newPl').onclick = () => { const n = prompt('Playlist name'); if (n?.trim() && !pls[n.trim()]) { pls[n.trim()] = []; store.set('gm_playlists', pls); renderLibrary(); } };
+}
+$('#v-library').addEventListener('click', e => {
+  const del = e.target.closest('[data-del]');
+  if (del) { e.stopPropagation(); if (confirm(`Delete "${del.dataset.del}"?`)) { delete pls[del.dataset.del]; store.set('gm_playlists', pls); renderLibrary(); } return; }
+  const pl = e.target.closest('.pl'); if (pl) { S.openPl = pl.dataset.n; renderLibrary(); }
+});
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-i]'); if (!el || !el.closest('main')) return;
+  const t = S.view[+el.dataset.i]; if (!t) return;
+  const a = e.target.closest('[data-a]')?.dataset.a || (t.type === 'album' ? 'open' : 'play');
+  if (a === 'add') return addDialog(t);
+  if (a === 'open') return openAlbum(t);
+  playList(S.view, +el.dataset.i);
+});
+async function openAlbum(t) {
+  const host = $('#res'); host.innerHTML = '<p class="msg">Loading album…</p>';
+  try { show(await getAlbum(t.id), host, { title: t.title, empty: 'This album has no playable tracks.' }); }
+  catch (e) { host.innerHTML = `<p class="msg">${esc(e.message)}</p>`; }
+}
+function addDialog(t) {
+  const d = $('#dlg'), names = Object.keys(pls);
+  d.innerHTML = `<b>Add to playlist</b><div style="margin:8px 0">${names.map(n => `<button class="opt" data-n="${esc(n)}">${esc(n)}</button>`).join('') || '<p class="msg">No playlists yet.</p>'}</div><input id="npn" placeholder="New playlist name"><button class="opt" id="create"><b>Create and add</b></button><button class="opt" id="cancel">Cancel</button>`;
+  const save = n => { pls[n] = pls[n] || []; if (!pls[n].some(x => x.id === t.id)) pls[n].push(t); store.set('gm_playlists', pls); d.close(); };
+  d.onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.n) save(b.dataset.n);
+    else if (b.id === 'create' && $('#npn').value.trim()) save($('#npn').value.trim());
+    else if (b.id === 'cancel') d.close();
+  };
+  d.showModal();
+}
+
+let timer, reqId = 0;
+async function search() {
+  const q = $('#q').value.trim(), host = $('#res');
+  if (!q) return renderRecent();
+  const my = ++reqId; host.innerHTML = '<p class="msg">Searching…</p>';
+  try { const items = await doSearch(q, S.src, S.flt); if (my === reqId) show(items, host, { top: true, empty: 'No results. Try different words or another source.' }); }
+  catch (e) { if (my === reqId) host.innerHTML = `<p class="msg">Couldn't search: ${esc(e.message)}</p>`; }
+}
+$('#q').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(search, 450); });
+$$('[data-src]').forEach(b => b.onclick = () => { S.src = b.dataset.src; $$('[data-src]').forEach(x => x.classList.toggle('on', x === b)); search(); });
+$$('[data-flt]').forEach(b => b.onclick = () => { S.flt = b.dataset.flt; $$('[data-flt]').forEach(x => x.classList.toggle('on', x === b)); search(); });
+
+renderRecent();
+</script>
+</body>
+</html>
+
