@@ -7,107 +7,111 @@
 <meta name="theme-color" content="#000000">
 <meta name="mobile-web-app-capable" content="yes">
 <style>
-:root{--g1:#8b5cf6;--g2:#f0abfc;--glass:rgba(255,255,255,.06);--line:rgba(255,255,255,.1);--mut:#9ca3af}
+:root{--g1:#22c55e;--g2:#4ade80;--glass:rgba(255,255,255,.06);--line:rgba(255,255,255,.1);--mut:#a1a1aa}
+[data-theme=purple]{--g1:#a78bfa;--g2:#f0abfc}
 [data-theme=cyan]{--g1:#22d3ee;--g2:#34d399}
 [data-theme=sunset]{--g1:#fb923c;--g2:#f43f5e}
-*{box-sizing:border-box;margin:0}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{background:#000;color:#f5f5f7;font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:grid;grid-template-columns:220px 1fr;grid-template-rows:1fr auto;overflow:hidden}
-body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(60% 50% at 15% 0%,color-mix(in srgb,var(--g1) 35%,transparent),transparent),radial-gradient(50% 40% at 100% 100%,color-mix(in srgb,var(--g2) 22%,transparent),transparent)}
+body{height:100vh;height:100dvh;background:#0a0a0a;color:#fff;font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:grid;grid-template-rows:minmax(0,1fr) auto auto;grid-template-areas:"main" "player" "tabs";overflow:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(70% 40% at 20% 0%,color-mix(in srgb,var(--g1) 14%,transparent),transparent)}
 button,input,select{font:inherit;color:inherit}
-button{background:none;border:0;cursor:pointer}
+button{background:none;border:0;cursor:pointer;touch-action:manipulation}
 :focus-visible{outline:2px solid var(--g2);outline-offset:2px}
-.glass{background:var(--glass);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--line)}
-aside{grid-row:1;margin:12px 0 0 12px;border-radius:20px;padding:20px 14px;display:flex;flex-direction:column;gap:6px}
-.brand{font-weight:800;font-size:22px;letter-spacing:.04em;padding:0 10px 16px;background:linear-gradient(90deg,var(--g1),var(--g2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.nav{text-align:left;padding:10px 12px;border-radius:12px;color:var(--mut);white-space:nowrap}
-.nav.on,.nav:hover{background:var(--glass);color:#fff}
-.themes{margin-top:auto;display:flex;gap:8px;padding:0 10px}
-.themes button{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);flex:none}
-.themes button.on{border-color:#fff}
-main{grid-row:1;overflow-y:auto;padding:24px 28px 40px;min-width:0}
 .hide{display:none!important}
-h2{font-size:18px;margin:22px 0 10px}
-.search input{width:100%;padding:14px 18px;border-radius:999px;background:var(--glass);border:1px solid var(--line);outline:0}
-.search input:focus{border-color:var(--g2)}
-.tabs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.tab{padding:6px 14px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
-.tab.on{background:linear-gradient(90deg,var(--g1),var(--g2));color:#000;border-color:transparent;font-weight:600}
+.glass{background:rgba(26,26,26,.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--line)}
+#main{grid-area:main;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;min-width:0}
+.pad{padding:0 16px 28px}
+.topbar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;background:linear-gradient(#0a0a0a 75%,transparent)}
+.ib{width:48px;height:48px;border-radius:14px;flex:none}
+.ib svg{width:28px;height:28px;fill:#fff}
+.sbox{flex:1;display:flex;align-items:center;gap:12px;min-height:52px;padding:0 18px;border-radius:18px;background:#1e1e1e;color:var(--g1)}
+.sbox svg{width:26px;height:26px;flex:none}
+.sbox input{flex:1;min-width:0;background:none;border:0;outline:0;font-size:16px;color:#fff}
+#tbTitle{flex:1;text-align:center;font-size:20px;margin-right:48px}
+#hero{padding:18px 0 14px}
+#hero h1{font-size:clamp(40px,12vw,56px);line-height:1.1;letter-spacing:.14em;color:var(--g1)}
+#hero h1 b{display:block;color:#fff;font-size:.8em}
+h2{font-size:20px;color:var(--g1);margin:28px 0 12px}
+.shead{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.outl{min-height:44px;padding:0 22px;border:2px solid #fff;border-radius:999px;font-weight:700;margin-bottom:8px}
+.tabs{display:flex;gap:8px;margin:6px 0 10px;flex-wrap:wrap}
+.tab,.chip{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
+.tab.on{background:var(--g1);color:#000;border-color:transparent;font-weight:700}
 .sep{width:1px;background:var(--line);margin:0 4px}
-.top{display:flex;gap:16px;align-items:center;padding:16px;border-radius:20px;max-width:520px;cursor:pointer}
-.top img{width:96px;height:96px;border-radius:14px;object-fit:cover}
-.top b{font-size:18px;display:block}
-.row{display:grid;grid-template-columns:48px 1fr auto auto auto;gap:12px;align-items:center;padding:8px;border-radius:12px;cursor:pointer}
-.row:hover,.row.cur{background:var(--glass)}
-.row.cur b{color:var(--g2)}
-.row img{width:48px;height:48px;border-radius:8px;object-fit:cover;background:#111}
-.meta{min-width:0}.meta b,.meta span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.meta span,.dur{color:var(--mut);font-size:12px}
-.row button{width:32px;height:32px;border-radius:50%}
-.row button:hover{background:var(--line)}
-.msg{color:var(--mut);padding:24px 0}
-.pl{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-radius:14px;margin-bottom:8px;cursor:pointer}
-.head{display:flex;gap:10px;align-items:center;margin:8px 0}
-.pill{padding:6px 14px;border-radius:999px;background:var(--glass);border:1px solid var(--line)}
-#player{grid-column:1/-1;margin:12px;border-radius:20px;padding:10px 18px calc(10px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:16px;align-items:center;z-index:5}
-.np{display:flex;gap:12px;align-items:center;min-width:0}
-.np img{width:52px;height:52px;border-radius:10px;object-fit:cover;background:#111;flex:none}
-.ctl{display:flex;flex-direction:column;gap:4px;align-items:center}
-.btns{display:flex;gap:6px;align-items:center}
-.btns button{width:36px;height:36px;border-radius:50%;font-size:16px}
-.btns button.on{color:var(--g2)}
-.btns .pp{width:46px;height:46px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#000;font-size:18px}
-.seek{display:flex;gap:8px;align-items:center;width:100%;font-size:11px;color:var(--mut)}
-input[type=range]{accent-color:var(--g2);flex:1;min-width:0}
-.right{display:flex;gap:8px;align-items:center;justify-content:flex-end}
-.right select{background:#111;border:1px solid var(--line);border-radius:8px;padding:4px}
-.hq{font-size:10px;border:1px solid var(--g2);color:var(--g2);border-radius:6px;padding:2px 6px;white-space:nowrap}
-#vol{max-width:90px}
-dialog{margin:auto;background:#0b0b0f;color:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;width:min(340px,90vw)}
-dialog::backdrop{background:rgba(0,0,0,.6)}
-dialog button.opt{display:block;width:100%;text-align:left;padding:10px;border-radius:10px}
-dialog button.opt:hover{background:var(--glass)}
-dialog input{width:100%;padding:10px;border-radius:10px;background:var(--glass);border:1px solid var(--line);margin:8px 0}
-@media(max-width:820px){
- body{grid-template-columns:1fr}
- aside{flex-direction:row;margin:8px 8px 0;padding:8px;overflow-x:auto;align-items:center}
- .brand{padding:0 8px}.themes{margin:0 0 0 auto}
- main{padding:16px}
- #player{grid-template-columns:1fr;gap:8px;margin:8px}
- .right{justify-content:space-between}
- .row{grid-template-columns:44px 1fr auto auto}.row .dur{display:none}
-}
-@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
-
-/* ===== v2: touch, home shelves, immersive lyrics ===== */
-html,body{-webkit-tap-highlight-color:transparent}
-body{height:100vh;height:100dvh}
-button,select,input[type=range],.card,.row,.np{touch-action:manipulation}
-.np{cursor:pointer}
-#yt{position:fixed;left:-9999px;bottom:0;width:1px;height:1px}
-.nav,.tab,.pill,.chip,.row button,.btns button,.right button,.right select,dialog button.opt{min-height:44px;min-width:44px}
-input{font-size:16px}
-input[type=range]{height:44px}
-.themes button{width:44px;height:44px;padding:9px;border:0;border-radius:50%;background-clip:content-box!important}
-.themes button.on{filter:drop-shadow(0 0 5px #fff)}
-.shelf{margin-right:-28px}
-.shead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-right:28px}
-.chips{display:flex;gap:6px}
-.chip{padding:0 14px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
-.chip.on{background:var(--glass);color:#fff;border-color:var(--g2)}
-.scroll{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;padding:4px 28px 10px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.scroll{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;margin:0 -16px;padding:2px 16px 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .scroll::-webkit-scrollbar{display:none}
-.card{flex:0 0 160px;scroll-snap-align:start;cursor:pointer;border-radius:18px;padding:8px;transition:all .3s ease;min-width:0}
-.card:hover{background:var(--glass)}
+.snap{scroll-snap-type:x mandatory}
+.ccard{flex:0 0 min(92%,460px);scroll-snap-align:center;border-radius:28px;padding:18px;background:var(--bg,#1b1b1b);border:1px solid var(--line);min-height:120px}
+.chead{display:flex;gap:16px}
+.chead img{width:104px;height:104px;border-radius:16px;object-fit:cover;flex:none;background:#111}
+.chead b{display:block;font-size:17px;line-height:1.25}
+.chead span{color:var(--mut);font-size:13px}
+.cbtns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.pillb{display:flex;gap:6px;align-items:center;padding:0 16px;min-height:44px;border-radius:999px;background:rgba(255,255,255,.14);font-weight:600}
+.crows{margin-top:14px;border-top:1px solid var(--line);padding-top:6px}
+.crow{display:grid;grid-template-columns:22px 56px 1fr 44px;gap:12px;align-items:center;padding:6px 0;cursor:pointer}
+.crow i{font-style:normal;color:var(--mut);text-align:center}
+.crow img{width:56px;height:56px;border-radius:10px;object-fit:cover;background:#111}
+.card{flex:0 0 156px;scroll-snap-align:start;cursor:pointer;min-width:0;transition:all .3s ease}
 .cv{position:relative}
-.cv img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;background:#111;display:block}
+.cv img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:20px;background:#111;display:block}
 .card b,.card span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card b{margin-top:8px;font-size:13px}.card span{color:var(--mut);font-size:12px}
-.rank{position:absolute;left:10px;bottom:6px;font:800 30px/1 system-ui;font-style:normal;text-shadow:0 2px 10px #000}
+.card b{margin-top:8px;font-size:15px;text-align:center}
+.card span{color:var(--mut);font-size:13px;text-align:center}
 .tag{position:absolute;right:8px;top:8px;font-style:normal;font-size:10px;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,.65)}
-.scroll.qp{display:grid;grid-auto-flow:column;grid-template-rows:repeat(3,auto);grid-auto-columns:min(300px,82%)}
-.card.q{flex:none;display:flex;gap:12px;align-items:center;padding:6px}
-.card.q .cv{width:52px;flex:none}.card.q b{margin:0}
+.card.w{flex-basis:min(78%,300px)}.card.w img{aspect-ratio:16/9}
+.card.ar{flex-basis:104px}.card.ar img{border-radius:50%}
+.scroll.qp{display:grid;grid-auto-flow:column;grid-template-rows:repeat(4,auto);grid-auto-columns:min(88%,420px);gap:6px 14px}
+.card.q{flex:none;display:grid;grid-template-columns:68px 1fr 44px;gap:12px;align-items:center}
+.card.q .cv img{border-radius:14px}
+.card.q b,.card.q span{text-align:left;margin:0}
+.card.q b{font-size:16px}
+.row{display:grid;grid-template-columns:56px 1fr 44px;gap:12px;align-items:center;padding:6px 2px;border-radius:14px;cursor:pointer}
+.row.cur b{color:var(--g1)}
+.row img{width:56px;height:56px;border-radius:12px;object-fit:cover;background:#111}
+.meta{min-width:0}.meta b,.meta span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta span{color:var(--mut);font-size:13px}
+.more{width:44px;height:44px;border-radius:50%;font-size:22px;font-weight:800;line-height:1}
+.top{display:flex;gap:16px;align-items:center;padding:14px;border-radius:22px;cursor:pointer}
+.top img{width:92px;height:92px;border-radius:16px;object-fit:cover}
+.top b{font-size:18px;display:block}
+.msg{color:var(--mut);padding:20px 0}
+.head{display:flex;gap:10px;align-items:center;margin:12px 0;justify-content:space-between}
+.pill{min-height:44px;min-width:44px;padding:0 16px;border-radius:999px;background:var(--glass);border:1px solid var(--line)}
+.pl{display:flex;justify-content:space-between;align-items:center;padding:6px 6px 6px 16px;border-radius:16px;margin-bottom:8px;cursor:pointer;min-height:56px}
+.dur{color:var(--mut);font-size:12px}
+.seg{display:flex;justify-content:space-around;margin:4px 0 14px;border-bottom:1px solid var(--line)}
+.seg button{min-height:48px;padding:0 28px;font-weight:700;border-bottom:3px solid transparent}
+.seg button.on{border-color:var(--g1)}
+.sel{min-height:48px;padding:0 16px;margin:8px 0;border-radius:16px;background:#14231a;border:1px solid color-mix(in srgb,var(--g1) 45%,transparent);font-weight:600}
+.sel option{background:#111}
+/* bottom nav (side rail on desktop) */
+#tabs{grid-area:tabs;display:flex;justify-content:space-around;align-items:center;padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px));background:#0a0a0a}
+#tabs button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;min-width:48px;padding:0 14px;border-radius:999px}
+#tabs button span{display:none;font-weight:700;white-space:nowrap}
+#tabs button.on{background:color-mix(in srgb,var(--g1) 20%,#000);color:var(--g1)}
+#tabs button.on span{display:inline}
+#tabs svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+/* player */
+#player{grid-area:player;position:relative;margin:6px 8px;border-radius:20px;padding:8px 12px;display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:16px;align-items:center;z-index:5}
+.np{display:flex;gap:12px;align-items:center;min-width:0;cursor:pointer}
+.np img{width:52px;height:52px;border-radius:12px;object-fit:cover;background:#111;flex:none}
+.np .meta b{font-size:17px}
+.ctl{display:flex;flex-direction:column;gap:2px;align-items:center}
+.btns{display:flex;gap:4px;align-items:center}
+.btns button{width:44px;height:44px;border-radius:50%;font-size:17px}
+.btns button.on{color:var(--g1)}
+.btns .pp{width:48px;height:48px;background:var(--g1);color:#000;font-size:18px}
+.seek{display:flex;gap:8px;align-items:center;width:100%;font-size:11px;color:var(--mut)}
+input[type=range]{accent-color:var(--g1);flex:1;min-width:0;height:44px}
+.right{display:flex;gap:6px;align-items:center;justify-content:flex-end}
+.right select{min-height:44px;background:#111;border:1px solid var(--line);border-radius:10px;padding:0 6px}
+.right button{min-height:44px;min-width:44px}
+.hq{font-size:10px;border:1px solid var(--g1);color:var(--g1);border-radius:6px;padding:2px 6px;white-space:nowrap}
+#vol{max-width:90px}
+#miniProg{position:absolute;left:16px;bottom:0;height:2px;border-radius:2px;background:var(--g1);width:0;max-width:calc(100% - 32px)}
+/* immersive lyrics */
 #lyrView{position:fixed;inset:0 0 var(--ph,130px) 0;z-index:4;overflow:hidden;background:#000;display:flex;flex-direction:column}
 #lyrBg{position:absolute;inset:-60px;background:center/cover no-repeat;filter:blur(50px) brightness(.5) saturate(1.5);transform:scale(1.15);transition:all .3s ease}
 #lyrView::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(#000a,#0003 30%,#000a)}
@@ -117,47 +121,62 @@ input[type=range]{height:44px}
 #lyr p{font-size:clamp(26px,5.2vw,46px);line-height:1.2;font-weight:800;color:rgba(255,255,255,.3);padding:10px 0;transition:all .3s ease;cursor:pointer;filter:blur(1.2px)}
 #lyr p.n2{color:rgba(255,255,255,.42)}
 #lyr p.n1{color:rgba(255,255,255,.6);filter:none}
-#lyr p.on{color:#fff;transform:scale(1.06);filter:none;text-shadow:0 0 28px color-mix(in srgb,var(--g2) 70%,transparent)}
+#lyr p.on{color:#fff;transform:scale(1.06);filter:none;text-shadow:0 0 28px color-mix(in srgb,var(--g1) 70%,transparent)}
 #lyr p.none{font-size:16px;font-weight:600;filter:none;color:var(--mut);cursor:default}
+#yt{position:fixed;left:-9999px;bottom:0;width:1px;height:1px}
+dialog{margin:auto;background:#0f0f0f;color:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;width:min(340px,90vw)}
+dialog::backdrop{background:rgba(0,0,0,.65)}
+dialog button.opt{display:block;width:100%;text-align:left;padding:0 12px;min-height:48px;border-radius:12px}
+dialog button.opt:hover{background:var(--glass)}
+dialog input{width:100%;min-height:48px;padding:0 12px;border-radius:12px;background:var(--glass);border:1px solid var(--line);margin:8px 0}
+.themes{display:flex;gap:6px;margin:10px 0}
+.themes button{width:48px;height:48px;padding:10px;border-radius:50%;background-clip:content-box!important}
+.themes button.on{filter:drop-shadow(0 0 5px #fff)}
+/* mobile: mini player, expands while the lyrics / now-playing view is open */
 @media(max-width:820px){
- .right{flex-wrap:wrap;gap:4px}#vol{max-width:none;flex:1 1 80px}
- .shelf{margin-right:-16px}.shead{padding-right:16px}.scroll{padding-right:16px}.card{flex-basis:140px}
+ #player{grid-template-columns:1fr auto;gap:8px}
+ body:not(.nowp) #shuf,body:not(.nowp) #prev,body:not(.nowp) #rep,body:not(.nowp) .seek,body:not(.nowp) .right{display:none}
+ body.nowp #player{grid-template-columns:1fr}
+ body.nowp #tabs{display:none}
+ .right{flex-wrap:wrap;gap:4px;justify-content:space-between}#vol{max-width:none;flex:1 1 80px}
 }
-@media(hover:none){.row:hover,.card:hover,.nav:hover{background:none}}
+@media(min-width:821px){
+ body{grid-template-columns:230px minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;grid-template-areas:"tabs main" "player player"}
+ #tabs{flex-direction:column;justify-content:flex-start;align-items:stretch;gap:6px;padding:24px 12px}
+ #tabs button{justify-content:flex-start}#tabs button span{display:inline}
+ #miniProg{display:none}
+ #lyrView{left:230px}
+ .pad,.topbar{max-width:1100px}
+}
+@media(hover:none){.card:hover,.row:hover{background:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
-<body data-theme="purple">
-<aside class="glass">
-  <div class="brand">GMUSIC</div>
-  <button class="nav on" data-v="search">Home</button>
-  <button class="nav" data-v="library">Library</button>
-  <button class="nav" data-v="history">Last session</button>
-  <div class="themes" role="group" aria-label="Theme">
-    <button data-t="purple" title="Cyberpunk Purple" style="background:linear-gradient(135deg,#8b5cf6,#f0abfc)"></button>
-    <button data-t="cyan" title="Neon Cyan" style="background:linear-gradient(135deg,#22d3ee,#34d399)"></button>
-    <button data-t="sunset" title="Sunset Orange" style="background:linear-gradient(135deg,#fb923c,#f43f5e)"></button>
+<body data-theme="green">
+<div id="main">
+  <div class="topbar">
+    <button id="burger" class="ib" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M3 5h18v3H3zM3 10.5h18v3H3zM3 16h18v3H3z"/></svg></button>
+    <label id="sbox" class="sbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="q" type="search" placeholder="Lagu, album, atau artis" autocomplete="off" enterkeyhint="search"></label>
+    <b id="tbTitle" class="hide"></b>
   </div>
-</aside>
-
-<main>
-  <section id="v-search">
-    <div class="search"><input id="q" type="search" placeholder="Search songs, artists or albums" autocomplete="off"></div>
-    <div class="tabs">
-      <button class="tab on" data-src="ytmusic">YTMusic</button><button class="tab" data-src="youtube">YouTube</button>
-      <span class="sep"></span>
+  <section id="v-home" class="pad">
+    <div id="hero"><h1>Halo,<b id="uname"></b></h1></div>
+    <div id="filters" class="tabs hide">
+      <button class="tab on" data-src="ytmusic">YTMusic</button><button class="tab" data-src="youtube">YouTube</button><span class="sep"></span>
       <button class="tab on" data-flt="songs">Songs</button><button class="tab" data-flt="videos">Videos</button><button class="tab" data-flt="albums">Albums</button>
     </div>
     <div id="home"></div><div id="res"></div>
   </section>
-  <section id="v-library" class="hide"></section>
-  <section id="v-history" class="hide"></section>
-</main>
+  <section id="v-charts" class="pad hide"></section>
+  <section id="v-explore" class="pad hide"></section>
+  <section id="v-library" class="pad hide"></section>
+</div>
 
-<div id="lyrView" class="hide"><div id="lyrBg"></div><div class="lhead"><button id="lyrClose" class="pill" aria-label="Close lyrics">⌄</button><div class="meta"><b id="lt"></b><span id="la"></span></div></div><div id="lyr"></div></div>
+<div id="lyrView" class="hide"><div id="lyrBg"></div><div class="lhead"><button id="lyrClose" class="pill" aria-label="Close">⌄</button><div class="meta"><b id="lt"></b><span id="la"></span></div></div><div id="lyr"></div></div>
 <div id="yt"></div>
 
 <footer id="player" class="glass">
-  <div class="np" id="np"><img id="art" alt=""><div class="meta"><b id="ttl">Nothing playing</b><span id="art-n">Search for a song to start</span></div></div>
+  <div class="np" id="np"><img id="art" alt=""><div class="meta"><b id="ttl">Now Playing</b><span id="art-n">Unknown</span></div></div>
   <div class="ctl">
     <div class="btns">
       <button id="shuf" title="Shuffle">⇄</button><button id="prev" title="Previous">⏮</button>
@@ -172,9 +191,28 @@ input[type=range]{height:44px}
     <button id="mute" title="Mute">🔊</button><input id="vol" type="range" min="0" max="100" value="80" aria-label="Volume">
     <button id="lyrBtn" class="pill">Lyrics</button>
   </div>
+  <div id="miniProg"></div>
 </footer>
 
+<nav id="tabs" aria-label="Navigasi">
+  <button class="on" data-v="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg><span>Beranda</span></button>
+  <button data-v="charts"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg><span>Tangga Lagu Teratas</span></button>
+  <button data-v="explore"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg><span>Jelajahi</span></button>
+  <button data-v="library"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="13" height="14" rx="2"/><path d="M4 7v13h13M14 13V8l4-1"/></svg><span>Library</span></button>
+</nav>
+
 <dialog id="dlg"></dialog>
+<dialog id="menu">
+  <b>GMUSIC</b>
+  <div class="themes" role="group" aria-label="Tema">
+    <button data-t="green" title="Spotify Green" style="background:linear-gradient(135deg,#22c55e,#4ade80)"></button>
+    <button data-t="purple" title="Cyberpunk Purple" style="background:linear-gradient(135deg,#a78bfa,#f0abfc)"></button>
+    <button data-t="cyan" title="Neon Cyan" style="background:linear-gradient(135deg,#22d3ee,#34d399)"></button>
+    <button data-t="sunset" title="Sunset Orange" style="background:linear-gradient(135deg,#fb923c,#f43f5e)"></button>
+  </div>
+  <button class="opt" id="mName">Ubah nama</button>
+  <button class="opt" id="mClose">Tutup</button>
+</dialog>
 
 <script>
 /* ============ CONFIG (edit here) ============
@@ -319,12 +357,12 @@ const refill = () => refilling || (refilling = (async () => {
 const hasKey = () => !!CONFIG.YOUTUBE_API_KEY;
 const plMap = i => ({ id: i.id.playlistId, type: 'album', title: decode(i.snippet.title), artist: cleanArtist(i.snippet.channelTitle), thumb: i.snippet.thumbnails?.medium?.url || '', duration: 0 });
 const feeds = {
-  async trendDaily() {
-    if (hasKey()) return (await ytApi('videos', { part: 'snippet,contentDetails', chart: 'mostPopular', videoCategoryId: 10, regionCode: CONFIG.REGION, maxResults: 20 })).items.map(mapVideo);
-    return (await piped('/trending?region=' + CONFIG.REGION)).map(fromPiped).filter(t => t.id && t.type === 'song').slice(0, 20);
+  async trendDaily(region = CONFIG.REGION, max = 20) {
+    if (hasKey()) return (await ytApi('videos', { part: 'snippet,contentDetails', chart: 'mostPopular', videoCategoryId: 10, regionCode: region, maxResults: max })).items.map(mapVideo);
+    return (await piped('/trending?region=' + region)).map(fromPiped).filter(t => t.id && t.type === 'song').slice(0, max);
   },
-  async trendWeekly() {
-    if (hasKey()) { const d = await ytApi('search', { part: 'snippet', type: 'video', videoCategoryId: 10, order: 'viewCount', publishedAfter: new Date(Date.now() - 7 * 864e5).toISOString(), regionCode: CONFIG.REGION, maxResults: 20 }); return hydrate(d.items, i => i.id.videoId); }
+  async trendWeekly(region = CONFIG.REGION) {
+    if (hasKey()) { const d = await ytApi('search', { part: 'snippet', type: 'video', videoCategoryId: 10, order: 'viewCount', publishedAfter: new Date(Date.now() - 7 * 864e5).toISOString(), regionCode: region, maxResults: 20 }); return hydrate(d.items, i => i.id.videoId); }
     return doSearch('top songs this week', 'ytmusic', 'songs');
   },
   async releases() {
@@ -465,13 +503,14 @@ setInterval(() => {
   if (d && Math.abs(+$('#seek').max - d) > 1) { $('#seek').max = d; $('#tot').textContent = fmt(d); }
   if (!S.seeking) { $('#seek').value = c; $('#cur').textContent = fmt(c); }
   syncLyrics(c); posState(c, d);
+  $('#miniProg').style.width = d ? (c / d * 100) + '%' : '0';
 }, 250);
 
 /* ============ LYRICS ============ */
 const lyr = $('#lyr'), lv = $('#lyrView');
 const fitPlayer = () => document.documentElement.style.setProperty('--ph', $('#player').offsetHeight + 14 + 'px');
 new ResizeObserver(fitPlayer).observe($('#player')); fitPlayer();
-function toggleLyrics(open) { const o = open ?? lv.classList.contains('hide'); lv.classList.toggle('hide', !o); fitPlayer(); if (o) syncLyrics(E.time(), true); }
+function toggleLyrics(open) { const o = open ?? lv.classList.contains('hide'); lv.classList.toggle('hide', !o); document.body.classList.toggle('nowp', !!o); fitPlayer(); if (o) { syncLyrics(E.time(), true); if (!history.state?.np) history.pushState({ np: 1 }, ''); } else if (history.state?.np) history.back(); }
 $('#lyrBtn').onclick = () => toggleLyrics(); $('#lyrClose').onclick = () => toggleLyrics(false); $('#np').onclick = () => S.i >= 0 && toggleLyrics(true);
 ['touchstart', 'wheel'].forEach(ev => lyr.addEventListener(ev, () => S.us = Date.now(), { passive: true })); // pause auto-scroll while the user browses lines
 const parseLrc = txt => (txt || '').split('\n').map(l => { const m = /^\[(\d+):(\d+(?:\.\d+)?)\](.*)/.exec(l); return m ? { t: +m[1] * 60 + +m[2], s: m[3].trim() } : null; }).filter(x => x && x.s);
@@ -496,48 +535,48 @@ function syncLyrics(c, force) {
 lyr.addEventListener('click', e => { const p = e.target.closest('p[data-k]'); if (p) E.seek(S.lines[+p.dataset.k].t); });
 
 /* ============ UI ============ */
-const setTheme = t => { document.body.dataset.theme = t; store.set('gm_theme', t); $$('.themes button').forEach(b => b.classList.toggle('on', b.dataset.t === t)); };
-setTheme(store.get('gm_theme', 'purple'));
-$$('.themes button').forEach(b => b.onclick = () => setTheme(b.dataset.t));  function go(v) {   $$
-('.nav').forEach(n => n.classList.toggle('on', n.dataset.v === v));
-  ['search', 'library', 'history'].forEach(x => $('#v-' + x).classList.toggle('hide', x !== v));
-  if (v === 'library') renderLibrary();
-  if (v === 'history') show(hist, $('#v-history'), { title: 'Last session', empty: 'Songs you play will show up here.' });
-  if (v === 'search' && !$('#q').value.trim()) showHome(); } $$('.nav').forEach(n => n.onclick = () => go(n.dataset.v));
+const setTheme = t => { document.body.dataset.theme = t; store.set('gm_theme', t); $$('#menu [data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === t)); };
+setTheme(store.get('gm_theme', 'green'));
+$$('#menu [data-t]').forEach(b => b.onclick = () => setTheme(b.dataset.t));
+$('#art').src = LOGO;
+let userName = store.get('gm_name', 'Teman');
+const hello = () => $('#uname').textContent = userName; hello();
+$('#burger').onclick = () => $('#menu').showModal();
+$('#mClose').onclick = () => $('#menu').close();
+$('#mName').onclick = () => { const n = prompt('Nama kamu', userName); if (n?.trim()) { userName = n.trim().slice(0, 24); store.set('gm_name', userName); hello(); } $('#menu').close(); };
+window.addEventListener('popstate', () => { if (!lv.classList.contains('hide')) toggleLyrics(false); });
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches?.('.card')) e.target.click(); });
 
-const row = (t, i) => t.type === 'album'
-  ? `<div class="row" data-i="${i}"><img src="${esc(t.thumb)}" alt="" loading="lazy"><div class="meta"><b>${esc(t.title)}</b><span>${esc(t.artist)} · Album</span></div><span></span><button data-a="open" title="Open album">›</button><span></span></div>`
-  : `<div class="row ${S.queue[S.i]?.id === t.id ? 'cur' : ''}" data-i="${i}"><img src="${esc(t.thumb)}" alt="" loading="lazy"><div class="meta"><b>${esc(t.title)}</b><span>${esc(t.artist)}</span></div><span class="dur">${fmt(t.duration)}</span><button data-a="play" title="Play">▶</button><button data-a="add" title="Add to playlist">＋</button></div>`;
+/* ---------- navigation ---------- */
+const TABS = ['home', 'charts', 'explore', 'library'], TITLES = { charts: 'Tangga Lagu Teratas', library: 'Library' };
+function go(v, keep) {
+  S.tab = v;
+  TABS.forEach(x => $('#v-' + x).classList.toggle('hide', x !== v));
+  $$('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  const sb = v === 'home' || v === 'explore';
+  $('#sbox').classList.toggle('hide', !sb); $('#tbTitle').classList.toggle('hide', sb); $('#tbTitle').textContent = TITLES[v] || '';
+  if (!lv.classList.contains('hide')) toggleLyrics(false);
+  $('#main').scrollTop = 0;
+  if (v === 'home' && !keep) showHome();
+  if (v === 'charts') showCharts();
+  if (v === 'explore') showExplore();
+  if (v === 'library') renderLibrary();
+}
+$$('#tabs button').forEach(b => b.onclick = () => { if (b.dataset.v === 'home') $('#q').value = ''; go(b.dataset.v); });
+
+/* ---------- lists ---------- */
+const row = (t, i, rank) => t.type === 'album'
+  ? `<div class="row" data-i="${i}"><img src="${esc(t.thumb)}" alt="" loading="lazy"><div class="meta"><b>${esc(t.title)}</b><span>${esc(t.artist)} · Album</span></div><button class="more" data-a="open" aria-label="Buka album">›</button></div>`
+  : `<div class="row ${S.queue[S.i]?.id === t.id ? 'cur' : ''}" data-i="${i}"><img src="${esc(t.thumb)}" alt="" loading="lazy"><div class="meta"><b>${rank ? (i + 1) + '. ' : ''}${esc(t.title)}</b><span>${esc(t.artist)}${t.duration ? ' · ' + fmt(t.duration) : ''}</span></div><button class="more" data-a="add" aria-label="Tambah ke playlist">⋮</button></div>`;
 function show(list, host, o = {}) {
   S.view = list;
   const hasTop = o.top && list[0] && list[0].type !== 'album';
   let h = hasTop ? `<h2>Top result</h2><div class="top glass" data-i="0" data-a="play"><img src="${esc(list[0].thumb)}" alt=""><div class="meta"><b>${esc(list[0].title)}</b><span>${esc(list[0].artist)} · ${fmt(list[0].duration)}</span></div></div><h2>Songs</h2>` : (o.title ? `<h2>${esc(o.title)}</h2>` : '');
-  h += list.map((t, k) => (hasTop && k === 0) ? '' : row(t, k)).join('');
-  host.innerHTML = list.length ? h : `<p class="msg">${esc(o.empty || 'Nothing here yet.')}</p>`;
+  h += list.map((t, k) => (hasTop && k === 0) ? '' : row(t, k, o.rank)).join('');
+  host.innerHTML = list.length ? h : `<p class="msg">${esc(o.empty || 'Belum ada apa-apa di sini.')}</p>`;
 }
-const renderRecent = () => showHome();
-
-function renderLibrary() {
-  const host = $('#v-library'), names = Object.keys(pls);
-  if (S.openPl && pls[S.openPl]) {
-    host.innerHTML = `<div class="head"><button class="pill" id="back">‹ Playlists</button><button class="pill" id="playAll">Play all</button></div><div id="plbox"></div>`;
-    show(pls[S.openPl], $('#plbox'), { title: S.openPl, empty: 'Add songs with the ＋ button.' });
-    $('#back').onclick = () => { S.openPl = null; renderLibrary(); };
-    $('#playAll').onclick = () => pls[S.openPl].length && playList(pls[S.openPl], 0);
-    return;
-  }
-  host.innerHTML = `<div class="head"><h2 style="margin:0">Playlists</h2><button class="pill" id="newPl">＋ New playlist</button></div>` +
-    (names.map(n => `<div class="pl glass" data-n="${esc(n)}"><span><b>${esc(n)}</b> <span class="dur">${pls[n].length} songs</span></span><button data-del="${esc(n)}" title="Delete playlist">✕</button></div>`).join('') || '<p class="msg">No playlists yet. Create one to save your favorites.</p>');
-  $('#newPl').onclick = () => { const n = prompt('Playlist name'); if (n?.trim() && !pls[n.trim()]) { pls[n.trim()] = []; store.set('gm_playlists', pls); renderLibrary(); } };
-}
-$('#v-library').addEventListener('click', e => {
-  const del = e.target.closest('[data-del]');
-  if (del) { e.stopPropagation(); if (confirm(`Delete "${del.dataset.del}"?`)) { delete pls[del.dataset.del]; store.set('gm_playlists', pls); renderLibrary(); } return; }
-  const pl = e.target.closest('.pl'); if (pl) { S.openPl = pl.dataset.n; renderLibrary(); }
-});
-
 document.addEventListener('click', e => {
-  const el = e.target.closest('[data-i]'); if (!el || !el.closest('main')) return;
+  const el = e.target.closest('[data-i]'); if (!el || !el.closest('#main')) return;
   const t = S.view[+el.dataset.i]; if (!t) return;
   const a = e.target.closest('[data-a]')?.dataset.a || (t.type === 'album' ? 'open' : 'play');
   if (a === 'add') return addDialog(t);
@@ -545,18 +584,18 @@ document.addEventListener('click', e => {
   playList(S.view, +el.dataset.i);
 });
 async function openAlbum(t) {
-  const host = $('#res'); $('#home').classList.add('hide'); host.innerHTML = '<p class="msg">Loading…</p>';
+  const host = $('#res'); $('#home').classList.add('hide'); $('#hero').classList.add('hide'); $('#filters').classList.add('hide'); host.innerHTML = '<p class="msg">Memuat…</p>';
   try {
     const items = await getAlbum(t.id);
-    show(items, host, { title: t.title, empty: 'This album has no playable tracks.' });
-    host.insertAdjacentHTML('afterbegin', `<div class="head"><button class="pill" id="backHome">‹ Back</button>${items.length ? '<button class="pill" id="playAlbum">▶ Play all</button>' : ''}</div>`);
+    show(items, host, { title: t.title, empty: 'Album ini tidak punya lagu yang bisa diputar.' });
+    host.insertAdjacentHTML('afterbegin', `<div class="head"><button class="pill" id="backHome">‹ Kembali</button>${items.length ? '<button class="pill" id="playAlbum">▶ Putar semua</button>' : ''}</div>`);
     $('#backHome').onclick = () => $('#q').value.trim() ? search() : showHome();
     $('#playAlbum')?.addEventListener('click', () => playList(items, 0));
   } catch (e) { host.innerHTML = `<p class="msg">${esc(e.message)}</p>`; }
 }
 function addDialog(t) {
   const d = $('#dlg'), names = Object.keys(pls);
-  d.innerHTML = `<b>Add to playlist</b><div style="margin:8px 0">${names.map(n => `<button class="opt" data-n="${esc(n)}">${esc(n)}</button>`).join('') || '<p class="msg">No playlists yet.</p>'}</div><input id="npn" placeholder="New playlist name"><button class="opt" id="create"><b>Create and add</b></button><button class="opt" id="cancel">Cancel</button>`;
+  d.innerHTML = `<b>Tambah ke playlist</b><div style="margin:8px 0">${names.map(n => `<button class="opt" data-n="${esc(n)}">${esc(n)}</button>`).join('') || '<p class="msg">Belum ada playlist.</p>'}</div><input id="npn" placeholder="Nama playlist baru"><button class="opt" id="create"><b>Buat dan tambahkan</b></button><button class="opt" id="cancel">Batal</button>`;
   const save = n => { pls[n] = pls[n] || []; if (!pls[n].some(x => x.id === t.id)) pls[n].push(t); store.set('gm_playlists', pls); d.close(); };
   d.onclick = e => {
     const b = e.target.closest('button'); if (!b) return;
@@ -567,60 +606,146 @@ function addDialog(t) {
   d.showModal();
 }
 
+/* ---------- library ---------- */
+function renderLibrary() {
+  const host = $('#v-library'), names = Object.keys(pls);
+  if (S.openPl && pls[S.openPl]) {
+    host.innerHTML = `<div class="head"><button class="pill" id="back">‹ Playlist</button><button class="pill" id="playAll">▶ Putar semua</button></div><div id="plbox"></div>`;
+    show(pls[S.openPl], $('#plbox'), { title: S.openPl, empty: 'Tambahkan lagu lewat tombol ⋮.' });
+    $('#back').onclick = () => { S.openPl = null; renderLibrary(); };
+    $('#playAll').onclick = () => pls[S.openPl].length && playList(pls[S.openPl], 0);
+    return;
+  }
+  host.innerHTML = `<div class="head"><h2 style="margin:0">Playlist</h2><button class="pill" id="newPl">＋ Baru</button></div>` +
+    (names.map(n => `<div class="pl glass" data-n="${esc(n)}"><span><b>${esc(n)}</b> <span class="dur">${pls[n].length} lagu</span></span><button class="more" data-del="${esc(n)}" aria-label="Hapus playlist">✕</button></div>`).join('') || '<p class="msg">Belum ada playlist. Buat satu untuk menyimpan lagu favoritmu.</p>') + '<div id="recent"></div>';
+  show(hist, $('#recent'), { title: 'Terakhir diputar', empty: 'Lagu yang kamu putar akan muncul di sini.' });
+  $('#newPl').onclick = () => { const n = prompt('Nama playlist'); if (n?.trim() && !pls[n.trim()]) { pls[n.trim()] = []; store.set('gm_playlists', pls); renderLibrary(); } };
+}
+$('#v-library').addEventListener('click', e => {
+  const del = e.target.closest('[data-del]');
+  if (del) { e.stopPropagation(); if (confirm(`Hapus "${del.dataset.del}"?`)) { delete pls[del.dataset.del]; store.set('gm_playlists', pls); renderLibrary(); } return; }
+  const pl = e.target.closest('.pl'); if (pl) { S.openPl = pl.dataset.n; renderLibrary(); }
+});
+
+/* ---------- search ---------- */
 let timer, reqId = 0;
 async function search() {
   const q = $('#q').value.trim(), host = $('#res');
-  if (!q) return renderRecent();
-  const my = ++reqId; $('#home').classList.add('hide'); host.innerHTML = '<p class="msg">Searching…</p>';
-  try { const items = await doSearch(q, S.src, S.flt); if (my === reqId) show(items, host, { top: true, empty: 'No results. Try different words or another source.' }); }
-  catch (e) { if (my === reqId) host.innerHTML = `<p class="msg">Couldn't search: ${esc(e.message)}</p>`; }
+  if (!q) return S.tab === 'home' ? showHome() : undefined;
+  if (S.tab !== 'home') go('home', true);
+  const my = ++reqId; $('#hero').classList.add('hide'); $('#home').classList.add('hide'); $('#filters').classList.remove('hide'); host.innerHTML = '<p class="msg">Mencari…</p>';
+  try { const items = await doSearch(q, S.src, S.flt); if (my === reqId) show(items, host, { top: true, empty: 'Tidak ada hasil. Coba kata lain atau sumber lain.' }); }
+  catch (e) { if (my === reqId) host.innerHTML = `<p class="msg">Gagal mencari: ${esc(e.message)}</p>`; }
 }
 $('#q').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(search, 450); });
-$$('[data-src]').forEach(b => b.onclick = () => { S.src = b.dataset.src; $$
-('[data-src]').forEach(x => x.classList.toggle('on', x === b)); search(); });
-$$('[data-flt]').forEach(b => b.onclick = () => { S.flt = b.dataset.flt; $$
-('[data-flt]').forEach(x => x.classList.toggle('on', x === b)); search(); });
+$('#q').addEventListener('keydown', e => { if (e.key === 'Enter') { clearTimeout(timer); search(); e.target.blur(); } });
+$$('[data-src]').forEach(b => b.onclick = () => { S.src = b.dataset.src; $$('[data-src]').forEach(x => x.classList.toggle('on', x === b)); search(); });
+$$('[data-flt]').forEach(b => b.onclick = () => { S.flt = b.dataset.flt; $$('[data-flt]').forEach(x => x.classList.toggle('on', x === b)); search(); });
 
-/* ============ HOME DASHBOARD ============ */
+/* ---------- home dashboard ---------- */
+const CHARTS = [
+  { id: 'daily', title: 'Top Video Musik Harian', bg: '#4a1a1a', ttl: 3 * 36e5, fn: () => feeds.trendDaily() },
+  { id: 'weekly', title: 'Top Video Musik Mingguan', bg: '#1c2b1f', ttl: 12 * 36e5, fn: () => feeds.trendWeekly() },
+  { id: 'global', title: 'Trending Global', bg: '#172a45', ttl: 3 * 36e5, fn: () => feeds.trendDaily('US', 20) }
+];
 const SHELVES = [
-  { id: 'trend', title: 'Sedang Tren', chips: [['daily', 'Harian'], ['weekly', 'Mingguan']] },
+  { id: 'trend', title: 'Sedang Tren', cls: 'snap' },
   { id: 'new', title: 'New Releases' },
-  { id: 'qp', title: 'Quick Picks', cls: 'qp' },
+  { id: 'qp', title: 'Quick Picks', cls: 'qp', act: 'Play all' },
   { id: 'comm', title: 'Trending Community Playlists' }
 ];
-const card = (t, k, id) => `<div class="card${id === 'qp' ? ' q' : ''}" role="button" tabindex="0" data-sh="${id}" data-k="${k}"><div class="cv"><img src="${esc(t.thumb)}" alt="" loading="lazy">${id === 'trend' ? `<i class="rank">${k + 1}</i>` : ''}${t.type === 'album' ? '<i class="tag">Album</i>' : ''}</div><div class="meta"><b>${esc(t.title)}</b><span>${esc(t.artist)}</span></div></div>`;
-function fillShelf(id, list) { S.shelves[id] = list; $(`#sh-${id} .scroll`).innerHTML = list.length ? list.map((t, k) => card(t, k, id)).join('') : '<p class="msg">Nothing to show yet.</p>'; }
 const persist = async (k, ttl, fn) => { const c = store.get('gm_c_' + k, null); if (c && Date.now() - c.t < ttl) return c.v; const v = await fn(); store.set('gm_c_' + k, { t: Date.now(), v }); return v; };
+const ccard = (c, l) => `<div class="ccard" id="cc-${c.id}" data-c="${c.id}" style="--bg:${c.bg}"><div class="chead"><img src="${esc(l[0]?.thumb)}" alt=""><div class="meta"><b style="white-space:normal">${c.title}</b><span>Chart • YouTube Charts</span><div class="cbtns"><button class="pillb" data-cp="play">▶ Putar</button><button class="pillb" data-cp="shuf">⇄ Acak</button></div></div></div><div class="crows">${l.slice(0, 3).map((t, k) => `<div class="crow" data-k="${k}"><i>${k + 1}</i><img src="${esc(t.thumb)}" alt="" loading="lazy"><div class="meta"><b>${esc(t.title)}</b><span>${esc(t.artist)}</span></div><button class="more" data-a="add" aria-label="Tambah ke playlist">⋮</button></div>`).join('')}</div></div>`;
+const card = (t, k, id) => `<div class="card${id === 'qp' ? ' q' : ''}" role="button" tabindex="0" data-sh="${id}" data-k="${k}"><div class="cv"><img src="${esc(t.thumb)}" alt="" loading="lazy">${t.type === 'album' && id !== 'new' ? '<i class="tag">Album</i>' : ''}</div><div class="meta"><b>${esc(t.title)}</b><span>${id === 'new' ? (t.type === 'album' ? 'Album' : 'Single') : esc(t.artist)}</span></div>${id === 'qp' ? '<button class="more" data-a="add" aria-label="Tambah ke playlist">⋮</button>' : ''}</div>`;
+function fillShelf(id, list) { S.shelves[id] = list; $(`#sh-${id} .scroll`).innerHTML = list.length ? list.map((t, k) => card(t, k, id)).join('') : '<p class="msg">Belum ada data.</p>'; }
 async function loadShelf(id, key, fn, ttl) {
   try { fillShelf(id, await persist(key, ttl, fn)); }
-  catch (e) { $(`#sh-${id} .scroll`).innerHTML = `<p class="msg">Couldn't load: ${esc(e.message)}</p>`; }
+  catch (e) { $(`#sh-${id} .scroll`).innerHTML = `<p class="msg">Gagal memuat: ${esc(e.message)}</p>`; }
 }
-const loadTrend = m => loadShelf('trend', `trend-${m}-${CONFIG.REGION}`, m === 'daily' ? feeds.trendDaily : feeds.trendWeekly, m === 'daily' ? 3 * 36e5 : 12 * 36e5).then(fillQuick);
+function loadCharts() {
+  CHARTS.forEach(c => persist(`chart-${c.id}-${CONFIG.REGION}`, c.ttl, c.fn).then(l => {
+    if (!l.length) throw Error('Data kosong');
+    S.shelves['c-' + c.id] = l; $('#cc-' + c.id).outerHTML = ccard(c, l); fillQuick();
+  }).catch(e => { const el = $('#cc-' + c.id); if (el) el.innerHTML = `<p class="msg">Gagal memuat: ${esc(e.message)}</p>`; }));
+}
 function fillQuick() {
-  const c = store.get('gm_counts', {}), l = Object.values(c).sort((a, b) => b.n - a.n).map(x => x.t);
+  const cn = store.get('gm_counts', {}), l = Object.values(cn).sort((a, b) => b.n - a.n).map(x => x.t);
   hist.forEach(t => { if (!l.some(x => x.id === t.id)) l.push(t); });
-  fillShelf('qp', l.length ? l.slice(0, 12) : (S.shelves.trend || []).slice(0, 12));
+  fillShelf('qp', l.length ? l.slice(0, 16) : (S.shelves['c-daily'] || []).slice(0, 16));
 }
 function showHome() {
-  $('#res').innerHTML = ''; const h = $('#home'); h.classList.remove('hide');
+  $('#res').innerHTML = ''; $('#hero').classList.remove('hide'); $('#filters').classList.add('hide');
+  const h = $('#home'); h.classList.remove('hide');
   if (!h.dataset.built) {
     h.dataset.built = 1;
-    h.innerHTML = SHELVES.map(s => `<section class="shelf" id="sh-${s.id}"><div class="shead"><h2>${s.title}</h2>${s.chips ? `<div class="chips">${s.chips.map(([k, l], n) => `<button class="chip${n ? '' : ' on'}" data-tr="${k}">${l}</button>`).join('')}</div>` : ''}</div><div class="scroll ${s.cls || ''}"><p class="msg">Loading…</p></div></section>`).join('');
-    loadTrend('daily');
+    h.innerHTML = SHELVES.map(s => `<section id="sh-${s.id}"><div class="shead"><h2>${s.title}</h2>${s.act ? `<button class="outl" data-qa="1">${s.act}</button>` : ''}</div><div class="scroll ${s.cls || ''}">${s.id === 'trend' ? CHARTS.map(c => `<div class="ccard" id="cc-${c.id}" data-c="${c.id}" style="--bg:${c.bg}"><p class="msg">Memuat…</p></div>`).join('') : '<p class="msg">Memuat…</p>'}</div></section>`).join('');
+    loadCharts();
     loadShelf('new', 'new-' + CONFIG.REGION, feeds.releases, 6 * 36e5);
     loadShelf('comm', 'comm-' + CONFIG.REGION, feeds.playlists, 6 * 36e5);
   }
   fillQuick();
 }
-$('#home').addEventListener('click', e => {   const chip = e.target.closest('[data-tr]');   if (chip) { $$('#home .chip').forEach(c => c.classList.toggle('on', c === chip)); return loadTrend(chip.dataset.tr); }
+$('#home').addEventListener('click', e => {
+  const cc = e.target.closest('.ccard');
+  if (cc) {
+    const list = S.shelves['c-' + cc.dataset.c]; if (!list) return;
+    const cp = e.target.closest('[data-cp]');
+    if (cp) { if (cp.dataset.cp === 'shuf') { S.shuffle = true; $('#shuf').classList.add('on'); playList(shuffle(list), 0); } else playList(list, 0); return; }
+    const r = e.target.closest('.crow'); if (!r) return;
+    const k = +r.dataset.k; if (e.target.closest('[data-a="add"]')) return addDialog(list[k]);
+    S.view = list; return playList(list, k);
+  }
+  if (e.target.closest('[data-qa]')) { const l = S.shelves.qp; if (l?.length) playList(l, 0); return; }
   const c = e.target.closest('.card'); if (!c) return;
   const list = S.shelves[c.dataset.sh], t = list?.[+c.dataset.k]; if (!t) return;
+  if (e.target.closest('[data-a="add"]')) return addDialog(t);
   if (t.type === 'album') return openAlbum(t);
   S.view = list; playList(list, +c.dataset.k);
 });
-$('#home').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click(); });
+function showHomeFromSearch() { showHome(); }
 
-renderRecent();
+/* ---------- charts tab ---------- */
+function showCharts() {
+  const h = $('#v-charts'); if (h.dataset.built) return; h.dataset.built = 1;
+  h.innerHTML = '<div class="seg"><button class="on" data-cr="local">Lokal</button><button data-cr="global">Global</button></div><div id="chartList"></div>';
+  h.addEventListener('click', e => { const b = e.target.closest('[data-cr]'); if (!b) return; $$('#v-charts [data-cr]').forEach(x => x.classList.toggle('on', x === b)); loadChartList(b.dataset.cr); });
+  loadChartList('local');
+}
+async function loadChartList(m) {
+  const host = $('#chartList'); host.innerHTML = '<p class="msg">Memuat…</p>';
+  try { const l = await persist(`top50-${m}-${CONFIG.REGION}`, 3 * 36e5, () => feeds.trendDaily(m === 'local' ? CONFIG.REGION : 'US', 50)); show(l, host, { rank: true, empty: 'Tangga lagu belum tersedia.' }); }
+  catch (e) { host.innerHTML = `<p class="msg">Gagal memuat: ${esc(e.message)}</p>`; }
+}
+
+/* ---------- explore tab ---------- */
+const REGIONS = [['US', 'Global'], ['ID', 'Indonesia'], ['GB', 'Inggris'], ['JP', 'Jepang'], ['KR', 'Korea Selatan'], ['BR', 'Brasil'], ['IN', 'India']];
+function showExplore() {
+  const h = $('#v-explore'); if (h.dataset.built) return; h.dataset.built = 1;
+  h.innerHTML = `<select id="reg" class="sel" aria-label="Wilayah">${REGIONS.map(([c, n]) => `<option value="${c}">${n}</option>`).join('')}</select><div id="xp"></div>`;
+  $('#reg').onchange = loadExplore;
+  $('#xp').addEventListener('click', e => {
+    const c = e.target.closest('.card'); if (!c) return;
+    if (c.dataset.pl) { const l = S.shelves[c.dataset.pl]; if (l?.length) playList(l, 0); return; }
+    if (c.dataset.ar) { $('#q').value = c.dataset.ar; go('home', true); search(); return; }
+    const l = S.shelves[c.dataset.sh]; if (l) { S.view = l; playList(l, +c.dataset.k); }
+  });
+  loadExplore();
+}
+async function loadExplore() {
+  const r = $('#reg').value, rn = REGIONS.find(x => x[0] === r)[1], xp = $('#xp'); xp.innerHTML = '<p class="msg">Memuat…</p>';
+  try {
+    const [d, w] = await Promise.all([persist(`ed-${r}`, 3 * 36e5, () => feeds.trendDaily(r, 25)), persist(`ew-${r}`, 12 * 36e5, () => feeds.trendWeekly(r)).catch(() => [])]);
+    if ($('#reg').value !== r) return;
+    Object.assign(S.shelves, { xv: d.slice(0, 10), xd: d, xw: w });
+    const artists = [...new Map([...d, ...w].map(t => [t.artist, t])).values()].slice(0, 14);
+    const pl = (id, ttl, l, tag) => l.length ? `<div class="card" role="button" tabindex="0" data-pl="${id}"><div class="cv"><img src="${esc(l[0].thumb)}" alt=""><i class="tag">${tag}</i></div><div class="meta"><b>${ttl} ${rn}</b><span>Chart • YouTube Charts</span></div></div>` : '';
+    xp.innerHTML = `<h2>Video unggulan</h2><div class="scroll">${S.shelves.xv.map((t, k) => `<div class="card w" role="button" tabindex="0" data-sh="xv" data-k="${k}"><div class="cv"><img src="${art(t)}" alt="" loading="lazy"></div><div class="meta"><b>${esc(t.title)}</b><span>${esc(t.artist)}</span></div></div>`).join('')}</div>` +
+      `<h2>Tangga video</h2><div class="scroll">${pl('xd', 'Top Harian', d, 'Harian')}${pl('xw', 'Top Mingguan', w, 'Mingguan')}</div>` +
+      `<h2>Top Artists</h2><div class="scroll">${artists.map(t => `<div class="card ar" role="button" tabindex="0" data-ar="${esc(t.artist)}"><div class="cv"><img src="${esc(t.thumb)}" alt="" loading="lazy"></div><div class="meta"><b>${esc(t.artist)}</b></div></div>`).join('')}</div>`;
+  } catch (e) { xp.innerHTML = `<p class="msg">Gagal memuat: ${esc(e.message)}</p>`; }
+}
+
+go('home');
 </script>
 </body>
 </html>
